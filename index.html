@@ -1,89 +1,64 @@
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-<title>Leaflet Map Provider Demo</title>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-
-<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css" />
-
-<style>
-html {
-height: 100%;
--moz-box-sizing: border-box;
--webkit-box-sizing: border-box;
-box-sizing: border-box;
-vertical-align: baseline;
-}
-body, #container { height: 100%; margin: 0; padding: 0;}
-.map { height: 100%; }
-
-#info {
-background: rgba(255, 255, 255, 0.85);
-box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-position: fixed;
-width: 50%;
-max-width: 600px;
-left: 45%;
-margin-left: -300px;
-padding: 6px 8px;
-
-border-radius: 5px;
-font: 14px/16px Arial, Helvetica, sans-serif;
-}
-#info h4:first-child {
-margin: 0 0 5px;
-}
-#info h4 {
-margin: 5px 0 5px;
-}
-#info h4 code {
-font-weight: normal;
-}
-#info .provider-names {
-padding-bottom: 5px;
-display: block;
-padding-left: 15px;
-}
-#info pre {
-margin: 0;
-}
-#info pre code {
-font-size: 10px;
-overflow-x: auto;
-}
-</style>
-<!--Fork Me on Github ribbon, we're using the awsome version from simonwhitaker available at https://github.com/simonwhitaker/github-fork-ribbon-css -->
-<link rel="stylesheet" href="../css/gh-fork-ribbon.css" />
-<!--[if IE]>
-<link rel="stylesheet" href="../css/gh-fork-ribbon.ie.css" />
-<![endif]-->
-<link rel="stylesheet" href="highlightjs/github.css">
-<link rel="stylesheet" href="control.layers.minimap.css">
+	<title>QGIS2leaf webmap</title>
+	<meta charset="utf-8" />
+	
+	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.css" /> <!-- we will us e this as the styling script for our webmap-->
+	<link rel="stylesheet" type="text/css" href="css/own_style.css">
 </head>
 <body>
-<div class="github-fork-ribbon-wrapper left">
-<div class="github-fork-ribbon">
-<a href="https://github.com/leaflet-extras/leaflet-providers">Fork me on GitHub</a>
-</div>
-</div>
-
-<div id="info">
-<h4><a href="https://github.com/leaflet-extras/leaflet-providers">Leaflet-providers preview</a></h4>
-<p>
-This page shows mini maps for all the layers available in <a href="https://github.com/leaflet-extras/leaflet-providers">Leaflet-providers</a>.
-</p>
-</div>
-<div id="map" class="map"></div>
-
-<script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet-src.js"></script>
-<script src="../leaflet-providers.js"></script>
-
-<script src="L.Map.Sync.js"></script>
-<script src="L.Control.Layers.Minimap.js"></script>
-
-<script src="highlightjs/highlight.pack.js"></script>
-
-<script src="preview.js"></script>
+	<div id="map"></div> <!-- this is the initial look of the map. in most cases it is done externally using something like a map.css stylesheet were you can specify the look of map elements, like background color tables and so on.-->
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.js"></script> <!-- this is the javascript file that does the magic-->
+  
+		<script src='data\exp_OaklandSmallProject.js' ></script>
+		
+		<script src='data\exp_OaklandRing16.js' ></script>
+		
+	<script>
+		var map = L.map('map', { zoomControl:true }).fitBounds([[37.6378134141,-122.636877822],[37.9445017776,-121.810613873]]);
+		var additional_attrib = 'created w. <a href="https://github.com/geolicious/qgis2leaf" target ="_blank">gis2leaf</a> by <a href="http://www.geolicious.de" target ="_blank">Geolicious</a> & contributors<br>';
+	var feature_group = new L.featureGroup([]);
+	
+		map.attributionControl.addAttribution(additional_attrib + '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'); 
+		L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+		
+			function pop_OaklandSmallProject(feature, layer) {
+				var popupContent = '<table><tr><th>attribute</th><th>value</th></tr><tr><td>OBJECTID</td><td>' + feature.properties.OBJECTID + '</td></tr><tr><td>STATEFP10</td><td>' + feature.properties.STATEFP10 + '</td></tr><tr><td>COUNTYFP10</td><td>' + feature.properties.COUNTYFP10 + '</td></tr><tr><td>TRACTCE10</td><td>' + feature.properties.TRACTCE10 + '</td></tr><tr><td>GEOID10</td><td>' + feature.properties.GEOID10 + '</td></tr><tr><td>NAME10</td><td>' + feature.properties.NAME10 + '</td></tr><tr><td>NAMELSAD10</td><td>' + feature.properties.NAMELSAD10 + '</td></tr><tr><td>MTFCC10</td><td>' + feature.properties.MTFCC10 + '</td></tr><tr><td>FUNCSTAT10</td><td>' + feature.properties.FUNCSTAT10 + '</td></tr><tr><td>ALAND10</td><td>' + feature.properties.ALAND10 + '</td></tr><tr><td>AWATER10</td><td>' + feature.properties.AWATER10 + '</td></tr><tr><td>INTPTLAT10</td><td>' + feature.properties.INTPTLAT10 + '</td></tr><tr><td>INTPTLON10</td><td>' + feature.properties.INTPTLON10 + '</td></tr><tr><td>Shape_Leng</td><td>' + feature.properties.Shape_Leng + '</td></tr><tr><td>Shape_Area</td><td>' + feature.properties.Shape_Area + '</td></tr><tr><td>Tract10</td><td>' + feature.properties.Tract10 + '</td></tr><tr><td>Join</td><td>' + feature.properties.Join + '</td></tr><tr><td>NameJoin</td><td>' + feature.properties.NameJoin + '</td></tr><tr><td>Censustrac</td><td>' + feature.properties.Censustrac + '</td></tr><tr><td>CW_adult</td><td>' + feature.properties.CW_adult + '</td></tr><tr><td>CW_child</td><td>' + feature.properties.CW_child + '</td></tr><tr><td>FS_adult</td><td>' + feature.properties.FS_adult + '</td></tr><tr><td>FS_child</td><td>' + feature.properties.FS_child + '</td></tr><tr><td>GA_adult</td><td>' + feature.properties.GA_adult + '</td></tr><tr><td>MC_adult</td><td>' + feature.properties.MC_adult + '</td></tr><tr><td>MC_child</td><td>' + feature.properties.MC_child + '</td></tr><tr><td>population</td><td>' + feature.properties.population + '</td></tr><tr><td>inpoverty</td><td>' + feature.properties.inpoverty + '</td></tr><tr><td>BOSDistric</td><td>' + feature.properties.BOSDistric + '</td></tr><tr><td>MediCal</td><td>' + feature.properties.MediCal + '</td></tr><tr><td>FoodStamps</td><td>' + feature.properties.FoodStamps + '</td></tr><tr><td>GEOid2</td><td>' + feature.properties.GEOid2 + '</td></tr><tr><td>TotalEstHo</td><td>' + feature.properties.TotalEstHo + '</td></tr><tr><td>TotalMOEHo</td><td>' + feature.properties.TotalMOEHo + '</td></tr><tr><td>Housefoods</td><td>' + feature.properties.Housefoods + '</td></tr><tr><td>Housefoo_1</td><td>' + feature.properties.Housefoo_1 + '</td></tr><tr><td>Housenofoo</td><td>' + feature.properties.Housenofoo + '</td></tr><tr><td>Housenof_1</td><td>' + feature.properties.Housenof_1 + '</td></tr><tr><td>FID_1</td><td>' + feature.properties.FID_1 + '</td></tr><tr><td>FID_12</td><td>' + feature.properties.FID_12 + '</td></tr><tr><td>STATEFP1_1</td><td>' + feature.properties.STATEFP1_1 + '</td></tr><tr><td>COUNTYFP_1</td><td>' + feature.properties.COUNTYFP_1 + '</td></tr><tr><td>TRACTCE1_1</td><td>' + feature.properties.TRACTCE1_1 + '</td></tr><tr><td>GEOID10_1</td><td>' + feature.properties.GEOID10_1 + '</td></tr><tr><td>NAME10_1</td><td>' + feature.properties.NAME10_1 + '</td></tr><tr><td>NAMELSAD_1</td><td>' + feature.properties.NAMELSAD_1 + '</td></tr><tr><td>INTPTLAT_1</td><td>' + feature.properties.INTPTLAT_1 + '</td></tr><tr><td>INTPTLON_1</td><td>' + feature.properties.INTPTLON_1 + '</td></tr><tr><td>JoinID</td><td>' + feature.properties.JoinID + '</td></tr><tr><td>JOINID2</td><td>' + feature.properties.JOINID2 + '</td></tr><tr><td>Populati_1</td><td>' + feature.properties.Populati_1 + '</td></tr><tr><td>Count_</td><td>' + feature.properties.Count_ + '</td></tr><tr><td>Sum_Score</td><td>' + feature.properties.Sum_Score + '</td></tr><tr><td>Sum_ID</td><td>' + feature.properties.Sum_ID + '</td></tr><tr><td>Sum_PROBTI</td><td>' + feature.properties.Sum_PROBTI + '</td></tr><tr><td>Sum_COURT</td><td>' + feature.properties.Sum_COURT + '</td></tr><tr><td>Sum_EVENT</td><td>' + feature.properties.Sum_EVENT + '</td></tr><tr><td>Sum_AGE</td><td>' + feature.properties.Sum_AGE + '</td></tr><tr><td>Sum_ZIP_4</td><td>' + feature.properties.Sum_ZIP_4 + '</td></tr><tr><td>Sum_ZIP</td><td>' + feature.properties.Sum_ZIP + '</td></tr><tr><td>Sum_Home_N</td><td>' + feature.properties.Sum_Home_N + '</td></tr><tr><td>Sum_ZIP4</td><td>' + feature.properties.Sum_ZIP4 + '</td></tr><tr><td>Sum_ZIP_A</td><td>' + feature.properties.Sum_ZIP_A + '</td></tr><tr><td>Sum_LAT_A</td><td>' + feature.properties.Sum_LAT_A + '</td></tr><tr><td>Sum_LONG_A</td><td>' + feature.properties.Sum_LONG_A + '</td></tr><tr><td>TotalEstTo</td><td>' + feature.properties.TotalEstTo + '</td></tr><tr><td>TotalMOETo</td><td>' + feature.properties.TotalMOETo + '</td></tr><tr><td>NumberUnin</td><td>' + feature.properties.NumberUnin + '</td></tr><tr><td>NumberUn_1</td><td>' + feature.properties.NumberUn_1 + '</td></tr><tr><td>Clients</td><td>' + feature.properties.Clients + '</td></tr><tr><td>Clients2</td><td>' + feature.properties.Clients2 + '</td></tr></table>';
+				layer.bindPopup(popupContent);
+			}
+					
+			var exp_OaklandSmallProjectJSON = new L.geoJson(exp_OaklandSmallProject,{
+				onEachFeature: pop_OaklandSmallProject,
+				style: function (feature) {
+					return {color: feature.properties.color_qgis2leaf,
+							opacity: feature.properties.transp_qgis2leaf,
+							fillOpacity: feature.properties.transp_fill_qgis2leaf};
+					}
+				});
+			feature_group.addLayer(exp_OaklandSmallProjectJSON);
+			
+					//add comment sign to hide this layer on the map in the initial view.
+					exp_OaklandSmallProjectJSON.addTo(map);
+			function pop_OaklandRing16(feature, layer) {
+				var popupContent = '<table><tr><th>attribute</th><th>value</th></tr><tr><td>OBJECTID</td><td>' + feature.properties.OBJECTID + '</td></tr><tr><td>Id</td><td>' + feature.properties.Id + '</td></tr><tr><td>Shape_Leng</td><td>' + feature.properties.Shape_Leng + '</td></tr><tr><td>Shape_Area</td><td>' + feature.properties.Shape_Area + '</td></tr><tr><td>ffid</td><td>' + feature.properties.ffid + '</td></tr><tr><td>TOWNID</td><td>' + feature.properties.TOWNID + '</td></tr><tr><td>Total_Supp</td><td>' + feature.properties.Total_Supp + '</td></tr><tr><td>OID_</td><td>' + feature.properties.OID_ + '</td></tr><tr><td>NameJoin</td><td>' + feature.properties.NameJoin + '</td></tr><tr><td>Censustrac</td><td>' + feature.properties.Censustrac + '</td></tr><tr><td>CW_adult</td><td>' + feature.properties.CW_adult + '</td></tr><tr><td>CW_child</td><td>' + feature.properties.CW_child + '</td></tr><tr><td>FS_adult</td><td>' + feature.properties.FS_adult + '</td></tr><tr><td>FS_child</td><td>' + feature.properties.FS_child + '</td></tr><tr><td>GA_adult</td><td>' + feature.properties.GA_adult + '</td></tr><tr><td>MC_adult</td><td>' + feature.properties.MC_adult + '</td></tr><tr><td>MC_child</td><td>' + feature.properties.MC_child + '</td></tr><tr><td>population</td><td>' + feature.properties.population + '</td></tr><tr><td>inpoverty</td><td>' + feature.properties.inpoverty + '</td></tr><tr><td>BOSDistric</td><td>' + feature.properties.BOSDistric + '</td></tr><tr><td>FSTotal</td><td>' + feature.properties.FSTotal + '</td></tr><tr><td>CWTotal</td><td>' + feature.properties.CWTotal + '</td></tr><tr><td>MCTotal</td><td>' + feature.properties.MCTotal + '</td></tr><tr><td>GATotal</td><td>' + feature.properties.GATotal + '</td></tr><tr><td>PopPoverty</td><td>' + feature.properties.PopPoverty + '</td></tr><tr><td>JoinID</td><td>' + feature.properties.JoinID + '</td></tr><tr><td>JOINID2</td><td>' + feature.properties.JOINID2 + '</td></tr><tr><td>Populati_1</td><td>' + feature.properties.Populati_1 + '</td></tr><tr><td>Count_</td><td>' + feature.properties.Count_ + '</td></tr><tr><td>Sum_PROBTI</td><td>' + feature.properties.Sum_PROBTI + '</td></tr></table>';
+				layer.bindPopup(popupContent);
+			}
+					
+			var exp_OaklandRing16JSON = new L.geoJson(exp_OaklandRing16,{
+				onEachFeature: pop_OaklandRing16,
+				style: function (feature) {
+					return {color: feature.properties.color_qgis2leaf,
+							opacity: feature.properties.transp_qgis2leaf,
+							fillOpacity: feature.properties.transp_fill_qgis2leaf};
+					}
+				});
+			feature_group.addLayer(exp_OaklandRing16JSON);
+			
+					//add comment sign to hide this layer on the map in the initial view.
+					exp_OaklandRing16JSON.addTo(map);
+	L.control.layers({},{"OaklandSmallProject": exp_OaklandSmallProjectJSON,"OaklandRing16": exp_OaklandRing16JSON}).addTo(map);
+	</script>
 </body>
 </html>
+	
